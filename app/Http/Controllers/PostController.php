@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     public function index() 
     {
-        $posts = [
-            [ 'id' => 1, 'title' => 'Post one' ],
-            [ 'id' => 2, 'title' => 'Post two' ],
-        ];
+        $posts = Post::latest()->paginate(10);
 
         return view('posts.index', [
             'posts' => $posts
         ]);
     }
 
-    public function show($id) 
+    public function show(Post $posts) 
     {
-
+        
         return view('posts.show', [
-            'id' => $id
+            'posts' => $posts
         ]);
 
     }
@@ -38,6 +36,8 @@ class PostController extends Controller
             'title' => 'required|max:20',
             'body' => 'required|max:200'
         ]);
+
+        Post::create($request->only('title','body'));
 
         return redirect()
             ->route('posts.index', 1)
