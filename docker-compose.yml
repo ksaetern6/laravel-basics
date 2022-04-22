@@ -31,6 +31,7 @@ services:
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
+            # MYSQL_TCP_PORT: '${DB_PORT}'
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: "%"
             MYSQL_DATABASE: '${DB_DATABASE}'
@@ -84,9 +85,14 @@ services:
             - sail
     phpmyadmin:
         image: phpmyadmin
-        restart: always
         ports:
             - 8080:80
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+        links:
+            - "mysql:db"
+        networks:
+            - sail
         
 networks:
     sail:
